@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>SOLMAR — Open-World Crime Game</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{width:100%;height:100%;overflow:hidden;background:#0b1c2c;font-family:Verdana,Arial,sans-serif;color:#fff}
+  #app{position:fixed;inset:0}
+  canvas{display:block}
+  .panel{background:rgba(8,20,32,.72);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:8px 12px}
+  #hud{position:fixed;inset:0;pointer-events:none;display:none}
+  #hud.on{display:block}
+  #topleft{position:absolute;top:12px;left:12px;min-width:210px}
+  #healthbar{height:14px;background:#222;border-radius:7px;overflow:hidden;margin-top:4px}
+  #healthfill{height:100%;width:100%;background:linear-gradient(90deg,#37d67a,#a5e34d);transition:width .2s}
+  #money{font-size:20px;font-weight:bold;color:#ffd94d;margin-top:4px}
+  #ammo{font-size:13px;color:#cfe8ff;margin-top:2px}
+  #stars{position:absolute;top:12px;right:12px;font-size:26px;letter-spacing:2px;color:#ffd94d;text-shadow:0 2px 6px #000}
+  #stars .off{color:rgba(255,255,255,.25)}
+  #objective{position:absolute;top:12px;left:50%;transform:translateX(-50%);max-width:46%;text-align:center;font-size:15px}
+  #objective b{color:#ffd94d}
+  #minimap{position:absolute;right:12px;bottom:12px;border:2px solid rgba(255,255,255,.5);border-radius:8px;background:#0e2a3a}
+  #speed{position:absolute;right:12px;bottom:204px;font-size:18px;text-align:right;text-shadow:0 1px 4px #000}
+  #hint{position:absolute;left:12px;bottom:12px;font-size:12px;line-height:1.6;color:#dfeefc}
+  #toast{position:absolute;top:22%;left:50%;transform:translateX(-50%);font-size:26px;font-weight:bold;color:#ffd94d;text-shadow:0 2px 8px #000;text-align:center}
+  #toast small{display:block;font-size:15px;color:#fff;margin-top:4px}
+  #center{position:absolute;top:58%;left:50%;transform:translateX(-50%);font-size:15px;text-shadow:0 1px 4px #000}
+  .screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at 50% 30%,rgba(20,80,120,.55),rgba(4,12,20,.88));z-index:10}
+  .card{max-width:640px;width:92%;text-align:center;padding:28px 30px}
+  .card h1{font-size:64px;letter-spacing:10px;color:#ffd94d;text-shadow:0 4px 0 #b3541e,0 8px 24px #000}
+  .card h2{font-size:15px;letter-spacing:4px;color:#9fd8ff;margin:6px 0 14px}
+  .card p{font-size:14px;line-height:1.65;color:#e8f3fb;margin-bottom:10px}
+  .card .keys{font-size:13px;color:#cfe8ff;line-height:1.9;text-align:left;display:inline-block;margin:6px 0 14px}
+  .card .keys b{color:#ffd94d}
+  button{pointer-events:auto;cursor:pointer;background:#ffd94d;color:#231303;border:0;border-radius:8px;padding:12px 26px;font-size:17px;font-weight:bold;margin:4px}
+  button:hover{background:#ffe680}
+  button.ghost{background:rgba(255,255,255,.14);color:#fff}
+  #pause{display:none}
+  #menu small{color:#9fc3dd}
+</style>
+<script type="importmap">{"imports":{"three":"./vendor/three.module.min.js"}}</script>
+</head>
+<body>
+<div id="app"></div>
+<div id="hud">
+  <div id="topleft" class="panel">
+    <div>MARCO &nbsp;<span id="hptext">100</span></div>
+    <div id="healthbar"><div id="healthfill"></div></div>
+    <div id="money">$0</div>
+    <div id="ammo"></div>
+  </div>
+  <div id="stars"></div>
+  <div id="objective" class="panel">Welcome to Solmar</div>
+  <canvas id="minimap" width="180" height="180"></canvas>
+  <div id="speed"></div>
+  <div id="hint">WASD move/drive · Shift run/handbrake<br>E enter/exit car · Click punch/shoot<br>Space jump/brake · P pause · M music</div>
+  <div id="toast"></div>
+  <div id="center"></div>
+</div>
+<div id="menu" class="screen"><div class="card">
+  <h1>SOLMAR</h1>
+  <h2>AN OPEN-WORLD CRIME GAME</h2>
+  <p>Marco owes money to the wrong people. One delivery, one escape and one last job
+  stand between him and a clean slate — if the Solmar police don't catch him first.</p>
+  <div class="keys">
+    <b>W A S D</b> move / drive &nbsp;·&nbsp; <b>Shift</b> run / handbrake<br>
+    <b>Mouse drag</b> look &nbsp;·&nbsp; <b>E</b> enter / exit car &nbsp;·&nbsp; <b>Space</b> jump / brake<br>
+    <b>Left click</b> punch / shoot &nbsp;·&nbsp; <b>R</b> reload &nbsp;·&nbsp; <b>P</b> pause
+  </div><br>
+  <button id="btnStart">START GAME</button>
+  <button id="btnContinue" class="ghost" style="display:none">CONTINUE</button>
+  <p><small>Best in desktop Chrome · sound on for the full experience</small></p>
+</div></div>
+<div id="pause" class="screen"><div class="card">
+  <h1 style="font-size:40px">PAUSED</h1>
+  <p id="pauseStats"></p>
+  <button id="btnResume">RESUME</button>
+  <button id="btnSave" class="ghost">SAVE</button>
+  <button id="btnQuit" class="ghost">QUIT TO MENU</button>
+</div></div>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
