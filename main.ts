@@ -20,14 +20,14 @@ if (existsSync(join(here, 'screenshots'))) cpSync(join(here, 'screenshots'), joi
 // The scorer's own caps (reference/gate.json): only text_max_bytes shapes the bytes;
 // the others refuse an entry the scorer would refuse (more than 4 screenshots or one
 // over 256 KiB; more than 993 files in game/ or 48 MiB of game files, in all, or a
-// path under game/ over 1000 bytes).
-writeFileSync(
-  join(out, 'dossier.json'),
-  buildDossier(out, {
-    text_max_bytes: 163840,
-    screenshots: { max: 4, max_bytes: 262144 },
-    game_max_files: 993,
-    game_max_bytes: 50331648,
-    game_path_max_bytes: 1000,
-  }),
-);
+// path under game/ over 1000 bytes). Log the dossier size so a local run shows
+// at a glance whether the 163,840-byte judge text cap held.
+const dossier = buildDossier(out, {
+  text_max_bytes: 163840,
+  screenshots: { max: 4, max_bytes: 262144 },
+  game_max_files: 993,
+  game_max_bytes: 50331648,
+  game_path_max_bytes: 1000,
+});
+writeFileSync(join(out, 'dossier.json'), dossier);
+console.log(`dossier.json: ${Buffer.byteLength(dossier)} bytes`);

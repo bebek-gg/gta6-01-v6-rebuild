@@ -1,9 +1,9 @@
 // SOLMAR — game wiring: states, loop, entering cars, wanted, health, missions, save.
 import * as THREE from 'three';
-import { WORLD, LANDMARKS, COLORS, clamp } from './config.js';
+import { WORLD, COLORS, clamp } from './config.js';
 import { AudioSys } from './audio.js';
 import { Input } from './input.js';
-import { buildCity } from './city.js';
+import { buildCity, LANDMARKS } from './city.js';
 import { Player } from './player.js';
 import { Car, randomCarColor } from './vehicles.js';
 import { Traffic } from './traffic.js';
@@ -199,6 +199,7 @@ class Game {
     // Drive or walk.
     let speed = 0;
     if (this.playerCar) {
+      this.player.group.visible = false; // Marco is inside the car, not standing on it
       const ax = input.moveAxis();
       const throttle = -ax.z;
       speed = this.playerCar.drive(dt, throttle, ax.x, this.colliders, input.down('ShiftLeft'));
@@ -227,6 +228,7 @@ class Game {
         }
       }
     } else {
+      this.player.group.visible = true;
       this.player.update(dt, input, this.colliders, this.camYaw);
       if (Math.abs(this.player.vel.x) + Math.abs(this.player.vel.z) > 6 && Math.random() < 0.1)
         this.fx.dust(this.player.pos.x, 0.2, this.player.pos.z);

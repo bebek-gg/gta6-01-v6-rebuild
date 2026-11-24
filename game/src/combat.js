@@ -1,6 +1,7 @@
 // Combat: fists and a pistol pickup — shooting, ammo, reload, knockdowns.
 import * as THREE from 'three';
-import { LANDMARKS, clamp } from './config.js';
+import { clamp } from './config.js';
+import { LANDMARKS } from './city.js';
 
 export class Combat {
   constructor(scene, audio) {

@@ -1,6 +1,7 @@
 // Marco's story: three chained missions with markers, objectives and cash rewards.
 import * as THREE from 'three';
-import { MISSIONS, LANDMARKS, rand } from './config.js';
+import { MISSIONS } from './config.js';
+import { LANDMARKS } from './city.js';
 
 function makeMarkerMesh() {
   const g = new THREE.Group();
