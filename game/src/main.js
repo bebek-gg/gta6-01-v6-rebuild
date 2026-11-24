@@ -46,7 +46,7 @@ class Game {
       teleport: (x, z) => { this.player.reset(x, z); if (this.playerCar) this.exitCar(); },
       enterNearestCar: () => this.tryEnterCar(),
       setWanted: n => { this.police.wanted = n; },
-      setMission: i => { this.missions.index = i; this.missions.stage = 0; this.missions.active = true; this.missions.setMarkerForStage(); if (i === 2 && !this.missions.specialCar) this.missions.spawnSpecialCar(Car, 0xf2c230); },
+      setMission: i => { this.missions.index = i; this.missions.stage = 0; this.missions.active = true; this.missions.setMarkerForStage(); if (i === 2 && !this.missions.specialCar) { const c = this.missions.spawnSpecialCar(Car, 0xf2c230); this.traffic.parked.push(c); } },
       givePistol: () => { this.combat.hasPistol = true; this.combat.ammo = 12; },
       state: () => ({ health: this.health, money: this.money, wanted: this.police.stars, mission: this.missions.index, inCar: !!this.playerCar, x: this.player.pos.x, z: this.player.pos.z }),
     };
@@ -231,8 +231,11 @@ class Game {
       if (Math.abs(this.player.vel.x) + Math.abs(this.player.vel.z) > 6 && Math.random() < 0.1)
         this.fx.dust(this.player.pos.x, 0.2, this.player.pos.z);
     }
-    // Mission 3 needs its gold coupe on the map.
-    if (this.missions.index === 2 && !this.missions.specialCar) this.missions.spawnSpecialCar(Car, 0xf2c230);
+    // Mission 3 needs its gold coupe on the map — and in the stealable pool.
+    if (this.missions.index === 2 && !this.missions.specialCar) {
+      const coupe = this.missions.spawnSpecialCar(Car, 0xf2c230);
+      this.traffic.parked.push(coupe);
+    }
     // World systems.
     const trafficEvents = this.traffic.update(dt, this.playerCar, this.player.pos, Math.abs(speed));
     for (const e of trafficEvents) if (e.type === 'hitPed') {

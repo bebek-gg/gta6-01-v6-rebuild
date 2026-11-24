@@ -75,7 +75,7 @@ export class HUD {
     const [px, pz] = toMap(s.player.x, s.player.z);
     c.save();
     c.translate(px, pz);
-    c.rotate(Math.atan2(Math.sin(s.yaw), Math.cos(s.yaw)) + Math.PI);
+    c.rotate(Math.PI - s.yaw); // triangle points up; rotate to the facing yaw
     c.fillStyle = '#ffffff';
     c.beginPath(); c.moveTo(0, -6); c.lineTo(4.5, 5); c.lineTo(-4.5, 5); c.closePath(); c.fill();
     c.restore();
